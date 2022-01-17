@@ -1,0 +1,7 @@
+{
+  "name": "mApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}
