@@ -1,4 +1,4 @@
-### phatcharamani ketkhuang
+### phatcharamani ketkhuang.
 ### การเขียนโปรแกรมบนอุปกรณ์เคลื่อนที่
 ## mApp
 
