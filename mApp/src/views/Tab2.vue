@@ -13,84 +13,27 @@
       </ion-fab>
 
       <ion-grid>
-        <ion-row>
-          <ion-col>
-            <ion-card>
-              <ion-card-header>
-                <ion-card-title>สินค้า 1</ion-card-title>
-              </ion-card-header>
-              <ion-card-content> รายละเอียด สินค้า 1 </ion-card-content>
-              <ion-card-content>
-                <ion-button size="small" @click="buy(1)">สั่งซื้อ</ion-button>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-          <ion-col>
-            <ion-card>
-              <ion-card-header>
-                <ion-card-title>สินค้า 2</ion-card-title>
-              </ion-card-header>
-              <ion-card-content> รายละเอียด สินค้า 2 </ion-card-content>
-              <ion-card-content>
-                <ion-button size="small" @click="buy(2)">สั่งซื้อ</ion-button>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-card>
-              <ion-card-header>
-                <ion-card-title>สินค้า 3</ion-card-title>
-              </ion-card-header>
-              <ion-card-content> รายละเอียด สินค้า 3 </ion-card-content>
-              <ion-card-content>
-                <ion-button size="small" @click="buy(3)">สั่งซื้อ</ion-button>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-          <ion-col>
-            <ion-card>
-              <ion-card-header>
-                <ion-card-title>สินค้า 4</ion-card-title>
-              </ion-card-header>
-              <ion-card-content> รายละเอียด สินค้า 4 </ion-card-content>
-              <ion-card-content>
-                <ion-button size="small" @click="buy(4)">สั่งซื้อ</ion-button>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-card>
-              <ion-card-header>
-                <ion-card-title>สินค้า 5</ion-card-title>
-              </ion-card-header>
-              <ion-card-content> รายละเอียด สินค้า 5 </ion-card-content>
-              <ion-card-content>
-                <ion-button size="small" @click="buy(5)">สั่งซื้อ</ion-button>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-          <ion-col>
-            <ion-card>
-              <ion-card-header>
-                <ion-card-title>สินค้า 6</ion-card-title>
-              </ion-card-header>
-              <ion-card-content> รายละเอียด สินค้า 6 </ion-card-content>
-              <ion-card-content>
-                <ion-button size="small" @click="buy(6)">สั่งซื้อ</ion-button>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-        </ion-row>
+        <ion-col v-for="data of dataProduct" :key="data.id">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>{{ data.product_name }}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              รหัสสินค้า {{ data.product_id }}
+            </ion-card-content>
+            <ion-card-content>
+              <ion-button size="small" @click="buy(data.product_id)"
+                >ราคา {{ data.product_price }}</ion-button
+              >
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
       </ion-grid>
     </ion-content>
   </ion-page>
 </template>
 
-<script lang="ts">
+<script>
 import axios from "axios";
 import {
   IonFab,
@@ -108,7 +51,6 @@ import {
   IonTitle,
   IonContent,
   IonGrid,
-  IonRow,
   IonCol,
 } from "@ionic/vue";
 import { add } from "ionicons/icons";
@@ -129,7 +71,6 @@ export default {
     IonContent,
     IonPage,
     IonGrid,
-    IonRow,
     IonCol,
   },
   setup() {
@@ -137,7 +78,25 @@ export default {
       add,
     };
   },
+  data() {
+    return {
+      dataProduct: "",
+    };
+  },
+  async created() {
+    this.allProduct();
+  },
   methods: {
+    async allProduct() {
+      try {
+        const res = await axios.get("http://localhost:3000/mongo/products");
+        this.dataProduct = res.data;
+        // console.log("allProduct")
+        // console.log(this.dataProduct);
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async addProduct() {
       const alert = await alertController.create({
         header: "เพิ่มข้อมูลสินค้า",
@@ -159,15 +118,17 @@ export default {
         buttons: [
           {
             text: "ยืนยัน",
-            handler: (data) => {
+            handler: async (data) => {
               if (data.product_id && data.product_name && data.product_price) {
-                 console.log("product_id : " + data.product_id);
-                 console.log("product_name : " + data.product_name);
-                 console.log("product_price : " + data.product_price);
-               
-               axios.post("http://localhost:3000/mongo/products", data).then(function(res){
-                  console.log(res.data.message);
-                });
+                // console.log("product_id : " + data.product_id);
+                // console.log("product_name : " + data.product_name);
+                // console.log("product_price : " + data.product_price);
+                await axios
+                  .post("http://localhost:3000/mongo/products", data)
+                  .then(function (res) {
+                    console.log(res.data.message);
+                  });
+                  this.allProduct();
               } else {
                 console.log("กรุณากรอกข้อมูลให้ครบถ้วน");
                 this.checkinput();
@@ -184,7 +145,7 @@ export default {
       });
       await alert.present();
     },
-    async buy(id: number) {
+    async buy(id) {
       const alert = await alertController.create({
         header: "ยืนยันการสั่งซื้อ",
         message: `สินค้ารหัส : ${id}`,
@@ -213,14 +174,14 @@ export default {
       });
       await alert.present();
     },
-    async success(text: string) {
+    async success(text) {
       const alert = await alertController.create({
         header: "สำเร็จ",
         message: text,
         buttons: ["OK"],
       });
-      await alert.present()
+      await alert.present();
     },
   },
-}
+};
 </script>
