@@ -47,11 +47,12 @@
 </template>
 
 <script lang="ts">
-import { IonCard, IonCardContent, IonIcon, IonItem, IonLabel, IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
+import { IonCard, IonCardContent, IonIcon, IonItem, IonLabel, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/vue';
 import { pin } from 'ionicons/icons';
+
 export default  {
   name: 'News',
-  components: { IonCard, IonCardContent, IonIcon, IonItem, IonLabel, IonHeader, IonToolbar, IonTitle, IonContent, IonPage },
+  components: { IonCard, IonCardContent, IonIcon, IonItem, IonLabel, IonHeader, IonToolbar, IonTitle, IonContent, IonPage, IonButton },
   setup() {
     return { pin };
   }
