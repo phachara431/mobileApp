@@ -25,6 +25,9 @@
               <ion-button size="small" @click="buy(data.product_id)"
                 >ราคา {{ data.product_price }}</ion-button
               >
+              <ion-button size="small" color="danger" @click="del(data._id)"
+                >ลบ</ion-button
+              >
             </ion-card-content>
           </ion-card>
         </ion-col>
@@ -87,6 +90,29 @@ export default {
     this.allProduct();
   },
   methods: {
+    async del(id){
+      const alert = await alertController.create({
+        header: "ยืนยันการลบข้อมูลสินค้า",
+        buttons: [
+          {
+            text: "ยืนยัน",
+            handler: async () => {
+              console.log("ยืนยัน " + id);
+              await axios.delete("http://localhost:3000/mongo/products/" + id)
+              this.allProduct();
+            },
+          },
+          {
+            text: "ยกเลิก",
+            handler: () => {
+              console.log("ยกเลิก");
+            },
+          },
+        ],
+      });
+      await alert.present();
+      
+    },
     async allProduct() {
       try {
         const res = await axios.get("http://localhost:3000/mongo/products");
