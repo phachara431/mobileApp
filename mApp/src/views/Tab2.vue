@@ -38,6 +38,7 @@
 
 <script>
 import axios from "axios";
+
 import {
   IonFab,
   IonFabButton,
@@ -56,7 +57,9 @@ import {
   IonGrid,
   IonCol,
 } from "@ionic/vue";
+
 import { add } from "ionicons/icons";
+
 export default {
   name: "Tab2",
   components: {
@@ -110,7 +113,9 @@ export default {
           },
         ],
       });
+
       await alert.present();
+
       
     },
     async allProduct() {
@@ -149,12 +154,13 @@ export default {
                 // console.log("product_id : " + data.product_id);
                 // console.log("product_name : " + data.product_name);
                 // console.log("product_price : " + data.product_price);
-                await axios
-                  .post("http://localhost:3000/mongo/products", data)
-                  .then(function (res) {
-                    console.log(res.data.message);
-                  });
-                  this.allProduct();
+
+                await axios.post("http://localhost:3000/mongo/products", data)
+
+                  setTimeout(() => {
+                     this.allProduct();
+                  }, 1000);
+                 
               } else {
                 console.log("กรุณากรอกข้อมูลให้ครบถ้วน");
                 this.checkinput();
@@ -169,6 +175,7 @@ export default {
           },
         ],
       });
+
       await alert.present();
     },
     async buy(id) {

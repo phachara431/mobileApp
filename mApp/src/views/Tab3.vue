@@ -7,9 +7,8 @@
     </ion-header>
     <ion-content :fullscreen="true">
       <ion-button @click="addCustomer" color="success" size="small"
-        >เพิ่มข้อมูลลูกค้า</ion-button
-      >
-
+        >เพิ่มข้อมูลลูกค้า
+        </ion-button>
       <ion-list>
         <ion-item>
           <ion-label>ชื่อ - นามสกุล : </ion-label>
@@ -20,20 +19,24 @@
           <ion-input v-model="tel"></ion-input>
         </ion-item>
       </ion-list>
-
       <ion-list>
         <ion-item-sliding v-for="data of dataCustomer" :key="data.id">
           <ion-item>
+            <ion-button color="primary" @click="detail(data.c_tel)" slot="end">โทร</ion-button>
             <ion-avatar slot="start">
               <img src="../../public/assets/icon/icon.png" />
             </ion-avatar>
             <ion-label>{{ data.c_fullname }}</ion-label>
           </ion-item>
-          <ion-item-options @click="detail(data.c_tel)" slot="end">
-            <ion-item-option>โทร</ion-item-option>
+         <ion-item-options @click="del(data._id)" slot="end">
+            <ion-item-option color="danger">ลบ</ion-item-option>
           </ion-item-options>
+          
+          
         </ion-item-sliding>
+        
       </ion-list>
+      
 
       <!-- <ion-list>
         <ion-item>
@@ -70,6 +73,7 @@
         </ion-item>
       </ion-list> -->
     </ion-content>
+    
   </ion-page>
 </template>
 
@@ -122,6 +126,28 @@ export default {
     this.allCustomer();
   },
   methods: {
+     async del(id){
+      const alert = await alertController.create({
+        header: "ยืนยันการลบข้อมูลลูกค้า",
+        buttons: [
+          {
+            text: "ยืนยัน",
+            handler: async () => {
+              console.log("ยืนยัน " + id);
+              await axios.delete("http://localhost:3000/mongo/customers/" + id)
+              this.allCustomer();
+            },
+          },
+          {
+            text: "ยกเลิก",
+            handler: () => {
+              console.log("ยกเลิก");
+            },
+          },
+        ],
+      }); 
+        await alert.present();
+    },
     async detail(tel) {
       const alert = await alertController.create({
         header: "เบอร์โทร",
